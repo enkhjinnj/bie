@@ -1,0 +1,123 @@
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .container {
+            border: 5px black;
+            text-align: center;
+
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: #9ef391;
+        }
+
+        button {
+            background-color: rgb(255, 192, 203);
+        }
+
+        button:hover {
+            background-color: rgb(245, 73, 101);
+        }
+    </style>
+</head>
+<body> 
+<div class="container">
+    <h2>Бүртгэл</h2>
+    <label for="firstname">Овог:</label>
+    <input type="text" id="firstname" required><br><br>
+
+    <label for="secondname">Нэр:</label>
+    <input type="text" id="secondname" required><br><br>
+
+    <label for="age">Нас:</label>
+    <input type="number" id="age" required><br><br>
+
+    <button onclick="addRecord()">Бүртгэх</button>
+
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Овог</th>
+                <th>Нэр</th>
+                <th>Нас</th>
+                <th>үйлдэл</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <script>
+        window.onload = function() {
+            loadData();
+        };
+
+        function addRecord() {
+            var firstname = document.getElementById('firstname').value;
+            var secondname = document.getElementById('secondname').value;
+            var age = document.getElementById('age').value;
+
+            if (firstname && secondname && age) {
+                var newRecord = {
+                    firstname: firstname,
+                    secondname: secondname,
+                    age: age
+                };
+
+                var records = JSON.parse(localStorage.getItem('records')) || [];
+                records.push(newRecord);
+                localStorage.setItem('records', JSON.stringify(records));
+
+                loadData();
+                document.getElementById('firstname').value = '';
+                document.getElementById('secondname').value = '';
+                document.getElementById('age').value = '';
+            } else {
+                alert('Бүгдийг бөглө!');
+            }
+        }
+
+        function loadData() {
+            var records = JSON.parse(localStorage.getItem('records')) || [];
+            var tbody = document.querySelector('#studentTable tbody');
+            tbody.innerHTML = '';
+
+            records.forEach(function(record, index) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${record.firstname}</td>
+                    <td>${record.secondname}</td>
+                    <td>${record.age}</td>
+                    <td><button onclick="deleteRecord(${index})">Устгах</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function deleteRecord(index) {
+            var records = JSON.parse(localStorage.getItem('records')) || [];
+            records.splice(index, 1);
+            localStorage.setItem('records', JSON.stringify(records));
+
+            loadData();
+        }
+    </script>
+</div>
+</body>
+</html>
